@@ -6,21 +6,33 @@ class Program
     {
         Console.WriteLine("Digite o nome do funcionário:");
         string nome = Console.ReadLine();
-        Console.WriteLine("Digite o salário bruto do funcionário:");
-        double salarioBruto = double.Parse(Console.ReadLine());
-        Console.WriteLine("Digite o valor do imposto:");
-        double imposto = double.Parse(Console.ReadLine());
 
-        Funcionario funcionario = new Funcionario(nome, salarioBruto, imposto);
+        double salarioBruto;
+        do
+        {
+            Console.WriteLine("Digite o salário bruto do funcionário:");
+        } while (!double.TryParse(Console.ReadLine(), out salarioBruto) || salarioBruto < 0);
+
+        double impostoPercentual;
+        do
+        {
+            Console.WriteLine("Digite a porcentagem do imposto (%):");
+        } while (!double.TryParse(Console.ReadLine(), out impostoPercentual) || impostoPercentual < 0);
+
+        Funcionario funcionario = new Funcionario(nome, salarioBruto, impostoPercentual);
 
         Console.WriteLine("Dados do funcionário:");
         funcionario.MostrarDados();
 
-        Console.WriteLine("Digite a porcentagem de aumento do salário:");
-        double aumentoPercentual = double.Parse(Console.ReadLine());
+        double aumentoPercentual;
+        do
+        {
+            Console.WriteLine("Digite a porcentagem de aumento do salário (%):");
+        } while (!double.TryParse(Console.ReadLine(), out aumentoPercentual) || aumentoPercentual < 0);
+
         funcionario.AumentarSalario(aumentoPercentual);
 
-        Console.WriteLine("Dados atualizados do funcionário:");
+        Console.WriteLine("Dados após o aumento salarial:");
         funcionario.MostrarDados();
     }
 }
@@ -29,34 +41,33 @@ class Funcionario
 {
     private string nome;
     private double salarioBruto;
-    private double imposto;
+    private double impostoPercentual;
 
-    public Funcionario(string nome, double salarioBruto, double imposto)
+    public Funcionario(string nome, double salarioBruto, double impostoPercentual)
     {
         this.nome = nome;
         this.salarioBruto = salarioBruto;
-        this.imposto = imposto;
-    }
+        this.impostoPercentual = impostoPercentual / 100;
 
     public double CalcularSalarioLiquido()
     {
-        return salarioBruto - imposto;
+        double valorImposto = salarioBruto * impostoPercentual;
+        return salarioBruto - valorImposto;
     }
 
     public void AumentarSalario(double percentual)
     {
-        salarioBruto += salarioBruto * (percentual / 100);
+        salarioBruto *= (1 + percentual / 100);
     }
 
     public void MostrarDados()
     {
         double salarioLiquido = CalcularSalarioLiquido();
-        Console.WriteLine("Nome: " + nome);
-        Console.WriteLine("Salário bruto: " + salarioBruto);
-        Console.WriteLine("Salário líquido: " + salarioLiquido);
+        Console.WriteLine($"Nome: {nome}");
+        Console.WriteLine($"Salário Bruto: {salarioBruto}");
+        Console.WriteLine($"Salário Líquido: {salarioLiquido}");
     }
 }
-
 
 
 //CalculoSalarioFuncionarioCOO
